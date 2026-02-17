@@ -7,7 +7,7 @@ Example video: https://youtu.be/3bG8LEePLRA
 If you have any feedback, bug reports, or if you just want to say hello, you can contact me on Discord: ScroogeD#5147
 
 # MIDI converter webpage
-[Click here!](https://scrooged2.github.io/owmidiconverter/converter)
+[Click here!](https://oneniko.github.io/owmidiconverter/converter)
 
 # Features
 
