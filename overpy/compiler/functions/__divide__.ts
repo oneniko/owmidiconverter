@@ -1,0 +1,67 @@
+/*
+ * This file is part of OverPy (https://github.com/Zezombye/overpy).
+ * Copyright (c) 2019 Zezombye.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+"use strict";
+
+import { NUMBER_LIMIT,  } from "../../globalVars";
+import { astParsingFunctions, numValue } from "../../utils/ast";
+import { functionNameToString } from "../../utils/logging";
+
+astParsingFunctions.__divide__ = function (content, compiler) {
+    //Check to throw a type warning if dividing a number by a vector
+    if (!compiler.isTypeSuitable("Vector", content.args[0].type) && !compiler.isTypeSuitable("float", content.args[1].type)) {
+        compiler.warn("w_type_check", "Cannot divide " + functionNameToString(content.args[0]) + " of type '" + compiler.typeToString(content.args[0].type) + "' by " + functionNameToString(content.args[1]) + " of type '" + compiler.typeToString(content.args[1].type) + "'");
+        return content;
+    }
+
+    if (compiler.enableOptimization) {
+        //If both arguments are numbers, return their quotient.
+        if (content.args[0].name === "__number__" && content.args[1].name === "__number__") {
+            let result = content.args[0].args[0].numValue / content.args[1].args[0].numValue;
+            if (Math.abs(result) <= NUMBER_LIMIT) {
+                return compiler.getAstForNumber(result);
+            }
+        }
+
+        if (!compiler.optimizeStrict) {
+            //A/1 -> A
+            //Non-strict optimization, as it could be used to cast to number.
+            if (content.args[1].name === "__number__" && content.args[1].args[0].numValue === 1) {
+                return content.args[0];
+            }
+
+            //A/0 = 0/A = 0
+            //Could also be used on a vector, in which case it should return vect(0,0,0) instead.
+            if ((content.args[0].name === "__number__" && content.args[0].args[0].numValue === 0) || (content.args[1].name === "__number__" && content.args[1].args[0].numValue === 0)) {
+                return compiler.getAstFor0();
+            }
+        }
+
+
+        //Check if both arguments are vectors containing numbers.
+        if (content.args[0].name === "vect" && content.args[0].args.every(arg => numValue(arg) !== null) && content.args[1].name === "vect" && content.args[1].args.every(arg => numValue(arg) !== null)) {
+            return compiler.Ast("vect", [compiler.getAstForNumber(content.args[0].args[0].args[0].numValue / content.args[1].args[0].args[0].numValue), compiler.getAstForNumber(content.args[0].args[1].args[0].numValue / content.args[1].args[1].args[0].numValue), compiler.getAstForNumber(content.args[0].args[2].args[0].numValue / content.args[1].args[2].args[0].numValue)]);
+        }
+
+        //Check if we have vector / number.
+        if (content.args[0].name === "vect" && content.args[1].name === "__number__" && content.args[0].args[0].name === "__number__" && content.args[0].args[1].name === "__number__" && content.args[0].args[2].name === "__number__") {
+            return compiler.Ast("vect", [compiler.getAstForNumber(content.args[0].args[0].args[0].numValue / content.args[1].args[0].numValue), compiler.getAstForNumber(content.args[0].args[1].args[0].numValue / content.args[1].args[0].numValue), compiler.getAstForNumber(content.args[0].args[2].args[0].numValue / content.args[1].args[0].numValue)]);
+        }
+    }
+
+    return content;
+};

@@ -1,0 +1,179 @@
+/* Element count: (total 24)
+
+    3: rule "1" (include.opy)
+    3: rule "2" (test include/include2.opy)
+    3: rule "3" (include3.opy)
+    3: rule "4" (test include/include4.opy)
+    3: rule "rule 5" (test include/test prefix.opy)
+    3: rule "rule 6" (test include/test prefix.opy)
+    3: rule "5" (include5.opy)
+    3: rule "6" (include.opy)
+
+*/
+
+settings
+{
+	main
+	{
+		Description: "Tower Meifense - BETA do not copy! by Zezombye"
+	}
+	lobby
+	{
+		Map Rotation: Paused
+		Max Spectators: 6
+		Return To Lobby: Never
+		Swap Teams After Match: No
+	}
+	modes
+	{
+		Assault
+		{
+			enabled maps
+			{
+				Temple of Anubis
+			}
+			Capture Speed Modifier: 60%
+		}
+		Escort
+		{
+			enabled maps
+			{
+				Dorado
+			}
+			Payload Speed Modifier: 200%
+		}
+		General
+		{
+			Game Mode Start: Manual
+			Hero Limit: Off
+			Respawn Time Scalar: 50%
+			Spawn Health Packs: Disabled
+		}
+	}
+	heroes
+	{
+		Team 1
+		{
+			enabled heroes
+			{
+				Ashe
+				Bastion
+				Torbjörn
+				Widowmaker
+			}
+		}
+		Team 2
+		{
+			Mei
+			{
+				Cryo-Freeze Cooldown Time: 200%
+				Ice Wall Cooldown Time: 200%
+				Secondary Fire: Off
+				Weapon Freeze Rate Scalar: 50%
+			}
+		}
+		General
+		{
+			Ashe
+			{
+				Ammunition Clip Size Scalar: 200%
+				Ultimate Duration: 300%
+			}
+			Bastion
+			{
+				Ammunition Clip Size Scalar: 200%
+			}
+			Widowmaker
+			{
+				Damage Dealt: 120%
+				Grappling Hook Cooldown Time: 10%
+			}
+		}
+	}
+}
+
+variables {
+    global:
+        0: A
+}
+
+//3 elements
+rule ("1") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 1); // 2 elements
+    }
+}
+
+//3 elements
+rule ("2") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 2); // 2 elements
+    }
+}
+
+//3 elements
+rule ("3") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 3); // 2 elements
+    }
+}
+
+//3 elements
+rule ("4") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 4); // 2 elements
+    }
+}
+
+//3 elements
+rule ("rule 5") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 5); // 2 elements
+    }
+}
+
+//3 elements
+rule ("[test prefix 3] rule 6") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 6); // 2 elements
+    }
+}
+
+//3 elements
+rule ("5") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 5); // 2 elements
+    }
+}
+
+//3 elements
+rule ("6") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, 6); // 2 elements
+    }
+}
+
